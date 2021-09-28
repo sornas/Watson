@@ -543,6 +543,18 @@ class Watson(object):
                     'time': delta.total_seconds()
                 })
 
+            untagged_time = reduce(
+                operator.add,
+                (f.stop - f.start for f in frames if not f.tags),
+                datetime.timedelta()
+            )
+
+            if tags_to_print and untagged_time:
+                project_report['tags'].append({
+                    'name': 'untagged',
+                    'time': untagged_time.total_seconds()
+                })
+
             report['projects'].append(project_report)
 
         report['time'] = total.total_seconds()
