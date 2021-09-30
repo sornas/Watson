@@ -413,9 +413,11 @@ def cancel(watson):
               help="only show tags")
 @click.option('-e', '--elapsed', is_flag=True,
               help="only show time elapsed")
+@click.option('-s', '--started_at', is_flag=True,
+              help="only show when the current project was started")
 @click.pass_obj
 @catch_watson_error
-def status(watson, project, tags, elapsed):
+def status(watson, project, tags, elapsed, started_at):
     """
     Display when the current project was started and the time spent since.
 
@@ -461,6 +463,14 @@ def status(watson, project, tags, elapsed):
 
     datefmt = watson.config.get('options', 'date_format', '%Y.%m.%d')
     timefmt = watson.config.get('options', 'time_format', '%H:%M:%S%z')
+
+    if started_at:
+        click.echo("{} {}".format(
+            style('date', current['start'].strftime(datefmt)),
+            style('time', current['start'].strftime(timefmt))
+        ))
+        return
+
     click.echo("Project {}{} started {} ({} {})".format(
         style('project', current['project']),
         (" " if current['tags'] else "") + style('tags', current['tags']),
